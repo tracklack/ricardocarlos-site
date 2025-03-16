@@ -1,121 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ricardo Carlos</title>
-    <style>
-        /* Reset styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ricardo Carlos</title>
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
-        h1 {
-            font-size: 50px;
-            font-weight: bold;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #111;
+      color: #f2f2f2;
+      line-height: 1.6;
+    }
 
-        p {
-            font-size: 20px;
-            margin: 15px 0;
-            opacity: 0.8;
-        }
+    header {
+      text-align: center;
+      padding: 100px 20px 60px;
+      background-color: #111;
+    }
 
-        .buttons {
-            margin-top: 20px;
-        }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 10px;
-            font-size: 18px;
-            color: white;
-            background-color: #ffbd59;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: 0.3s ease;
-        }
+    header p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
 
-        .btn:hover {
-            background-color: #e6a849;
-        }
+    section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
 
-        .social-links {
-            margin-top: 30px;
-        }
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 500;
+      border-bottom: 2px solid #333;
+      padding-bottom: 10px;
+    }
 
-        .social-links a {
-            display: inline-block;
-            margin: 0 10px;
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-            opacity: 0.8;
-            transition: 0.3s;
-        }
+    .feed-item {
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: #1c1c1c;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
 
-        .social-links a:hover {
-            opacity: 1;
-        }
+    .feed-item:hover {
+      background-color: #222;
+    }
 
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            font-size: 14px;
-            opacity: 0.6;
-        }
+    .feed-item a {
+      color: #FFBD59;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
 
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 36px;
-            }
+    .feed-item a:hover {
+      text-decoration: underline;
+    }
 
-            p {
-                font-size: 18px;
-            }
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 30px 20px;
+      color: #888;
+    }
 
-            .btn {
-                font-size: 16px;
-                padding: 10px 20px;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
+  <header>
     <h1>Ricardo Carlos</h1>
-    <p>Welcome to my space on the web.</p>
+    <p>Creative professional. Writer. Storyteller. Curious mind.</p>
+  </header>
 
-    <div class="buttons">
-        <a href="#" class="btn">About Me</a>
-        <a href="mailto:info@ricardocarlos.com" class="btn">Contact</a>
+  <section>
+    <div class="section-title">Latest Writings</div>
+    <div id="medium-feed">
+      <p>Loading articles...</p>
     </div>
+  </section>
 
-    <div class="social-links">
-        <a href="https://www.instagram.com/" target="_blank">Insta gram</a>
-        <a href="https://www.linkedin.com/" target="_blank">LinkedIn</a>
-        <a href="https://twitter.com/" target="_blank">Twitter</a>
-    </div>
+  <div class="footer">
+    © 2025 Ricardo Carlos — All Rights Reserved.
+  </div>
 
-    <div class="footer">
-        © 2024 Ricardo Carlos. All rights reserved.
-    </div>
+  <!-- Medium Feed JS (RSS Parser via third-party) -->
+  <script>
+    const feedContainer = document.getElementById('medium-feed');
+    const mediumUsername = "your-medium-username"; // ← replace with just your Medium username
+
+    fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${mediumUsername}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.items || data.items.length === 0) {
+          feedContainer.innerHTML = "<p>No recent articles found.</p>";
+          return;
+        }
+
+        let output = '';
+        data.items.slice(0, 4).forEach(post => {
+          output += `
+            <div class="feed-item">
+              <a href="${post.link}" target="_blank">${post.title}</a>
+              <p style="color:#aaa; font-size: 0.9rem;">${new Date(post.pubDate).toLocaleDateString()}</p>
+            </div>
+          `;
+        });
+        feedContainer.innerHTML = output;
+      })
+      .catch(err => {
+        feedContainer.innerHTML = "<p>Failed to load articles. Please try again later.</p>";
+        console.error("Feed error:", err);
+      });
+  </script>
 
 </body>
 </html>
